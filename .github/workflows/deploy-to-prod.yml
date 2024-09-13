@@ -1,0 +1,32 @@
+on:
+  push:
+    branches:
+    - main
+name: el pibe que hace deploy directamente a produccion, crazy isnt? crazy? i was crazy once
+jobs:
+  # le deje my_job pq evidentemente es un nombre simplemente
+  my_job:
+    name: deploy to staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: ok checkeo el ultimo commit
+        uses: actions/checkout/@v3
+
+      - name: instalo node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: instalo las dependencias
+        run: npm install
+
+      - name: buildeo chil
+        run: npm run build
+
+      - name: sincronizo al cpanel
+        uses: SamKirkland/FTP-Deploy-Action/@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
